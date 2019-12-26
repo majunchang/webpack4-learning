@@ -1,0 +1,12 @@
+* {
+  margin: 0;
+  padding: 0; }
+
+
+body {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+      justify-content: center;
+}
+

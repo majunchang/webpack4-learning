@@ -4,12 +4,12 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const bundleSizePlugin = require('./write-webpack/bundleSize-plugins')
 
 module.exports = (env, argv) => {
     const devMode = argv.mode !== 'production'
     return {
         entry: [
-            "babel-polyfill",
             path.join(__dirname, './src/main.js')
         ],
         module: {
@@ -25,9 +25,10 @@ module.exports = (env, argv) => {
                 {
                     test: /\.(js)$/,
                     exclude: /node_modules/,
-                    use: {
-                        loader: "babel-loader"
-                    }
+                    use: [
+                        "babel-loader",
+                        path.resolve(__dirname,'write-webpack/dropConsole-loader.js'),
+                  ]
                 },
                 {
                     test: /\.html$/,
@@ -63,14 +64,15 @@ module.exports = (env, argv) => {
         plugins: [
             new CleanWebpackPlugin(['dist']),
             new HtmlWebPackPlugin({
-                template: "./public/index.html",
+                template: path.resolve(__dirname,'./public/index.html'),
                 filename: "./index.html"
             }),
             new MiniCssExtractPlugin({
                 filename: "[name].css",
                 chunkFilename: "[id].css"
             }),
-            new VueLoaderPlugin()
+            new VueLoaderPlugin(),
+            new bundleSizePlugin()
         ]
     }
 };
